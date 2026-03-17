@@ -11,9 +11,10 @@ import remarkGfm from "remark-gfm";
 import { ModelConfig } from "./components/model-config";
 import { ShimmerText } from "./components/shimmer-text";
 import { VisualWidget } from "./components/visual-widget";
+import { toast } from "sonner";
 
 const staterPrompts = [
-  "Show me how compound interest works",
+  "How compound interest works?",
   "Visualize how binary search works on a sorted list, step by step",
 ];
 
@@ -21,27 +22,46 @@ export default function App() {
   const { addChatMessage, messages } = useChatStore();
   const [input, setInput] = useState("");
 
-  function sendMessage(customInput?: string) {
+  async function sendMessage(customInput?: string) {
     let userMsg = input;
     if (customInput) userMsg = customInput;
 
     const msgId = addChatMessage(userMsg);
-    query(userMsg, msgId);
+    try {
+      await query(userMsg, msgId);
+    } catch (e) {
+      console.error("Caught");
+      toast("Error occurred, please try again!", {
+        description: (
+          <pre className="mt-2 w-[320px] overflow-x-auto rounded-md bg-code p-4 text-code-foreground">
+            <code>{JSON.stringify(e, null, 2)}</code>
+          </pre>
+        ),
+        classNames: { content: "flex flex-col gap-2" },
+      });
+    }
     setInput("");
   }
 
   return (
     <main className="min-h-screen bg-card">
-      <nav className="h-14 w-full fixed top-0 left-0 bg-card/60 backdrop-blur-2xl z-50">
+      <nav className="h-14 w-full fixed top-0 left-0 bg-card border-b z-50">
         <div className="flex items-center justify-between px-4 h-full max-w-3xl mx-auto">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
             <img src="/logo.svg" className="size-8 hover:animate-spin" />
-            <div>
+            <div className="-space-y-0.5">
               <h1 className="font-mono">map_out</h1>
-              <p className="text-xs text-muted-foreground">by Madhi AI</p>
+              <p className="text-xs text-muted-foreground">
+                by{" "}
+                <a href="https://www.madhi.ai" className="underline">
+                  Madhi AI
+                </a>
+              </p>
             </div>
           </div>
-          <Button variant={"secondary"}>New Chat</Button>
+          <div className="flex items-center gap-2.5">
+            <Button variant={"outline"}>New Chat</Button>
+          </div>
         </div>
       </nav>
       <div className="max-w-3xl w-full mx-auto fixed bottom-0 bg-card left-1/2 transform translate-x-[-50%] z-50 pb-3.5">
@@ -51,9 +71,7 @@ export default function App() {
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
-                if (e.shiftKey) {
-                  return;
-                }
+                if (e.shiftKey) return;
                 e.preventDefault();
                 sendMessage();
               }
@@ -140,7 +158,7 @@ export default function App() {
                     {block.type === "widget" && (
                       <>
                         {block.isLoading ? (
-                          <div className="w-full h-14 p-4 rounded-lg bg-muted flex items-center gap-2">
+                          <div className="w-full h-14 p-4 rounded-xl bg-muted flex items-center gap-2">
                             <Loader className="animate-spin w-5 h-5" />
                             <ShimmerText text="Creating a visual to make this clearer" />
                           </div>
