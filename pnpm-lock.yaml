@@ -25,7 +25,7 @@ importers:
         version: 0.577.0(react@19.2.4)
       openai:
         specifier: ^6.31.0
-        version: 6.31.0(zod@4.3.6)
+        version: 6.31.0(zod@3.25.76)
       radix-ui:
         specifier: ^1.4.3
         version: 1.4.3(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -5467,9 +5467,9 @@ snapshots:
       powershell-utils: 0.1.0
       wsl-utils: 0.3.1
 
-  openai@6.31.0(zod@4.3.6):
+  openai@6.31.0(zod@3.25.76):
     optionalDependencies:
-      zod: 4.3.6
+      zod: 3.25.76
 
   optionator@0.9.4:
     dependencies:
