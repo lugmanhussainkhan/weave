@@ -132,3 +132,6 @@ Use libraries when they meaningfully reduce complexity or improve output quality
 | Amber  | #FAEEDA       | #FAC775 | #EF9F27 | #BA7517 | #854F0B | #633806 | #412402       |
 | Red    | #FCEBEB       | #F7C1C1 | #F09595 | #E24B4A | #A32D2D | #791F1F | #501313       |
 `;
+
+export const renderVisualOutput =
+  "The visuals have been rendered for the user. Avoid repeating visually presented content in the text.";

@@ -3,7 +3,11 @@ import type {
   ChatCompletionMessageParam,
   ChatCompletionTool,
 } from "openai/resources/chat";
-import { renderVisualDescription, systemPrompt } from "./instructions";
+import {
+  renderVisualDescription,
+  renderVisualOutput,
+  systemPrompt,
+} from "./instructions";
 import { useChatStore, useModelStore } from "./store";
 
 const tools: ChatCompletionTool[] = [
@@ -99,7 +103,13 @@ export async function query(query: string, currentMsgId: string) {
           context.push({
             role: "tool",
             tool_call_id: tc.id,
-            content: "",
+            content: renderVisualOutput,
+          });
+        } else {
+          context.push({
+            role: "tool",
+            tool_call_id: tc.id,
+            content: "Invalid tool call.",
           });
         }
       }
