@@ -1,4 +1,5 @@
 import { nanoid } from "nanoid";
+import type { ChatCompletionMessageParam } from "openai/resources/chat";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -15,21 +16,19 @@ type Message = {
   isLoading: boolean;
 };
 
-type ContextMessage = import("openai/resources/chat").ChatCompletionMessageParam;
-
 type ChatStore = {
   messages: Record<string, Message>;
-  context: ContextMessage[];
+  context: ChatCompletionMessageParam[];
   addChatMessage: (query: string) => string;
   appendTextDelta: (id: string, content: string) => void;
   appendWidgetBlock: (messageId: string, refId: string) => void;
+  updateChatMessage: (id: string, partial: Partial<Message>) => void;
   updateWidgetBlock: (
     messageId: string,
     refId: string,
     content: string,
   ) => void;
-  setMessageLoading: (messageId: string, isLoading: boolean) => void;
-  pushContext: (...messages: ContextMessage[]) => void;
+  pushContext: (...messages: ChatCompletionMessageParam[]) => void;
 };
 
 export const useChatStore = create<ChatStore>((set) => ({
@@ -55,7 +54,7 @@ export const useChatStore = create<ChatStore>((set) => ({
           role: "assistant",
           content: [],
           annotation: null,
-          isLoading: false,
+          isLoading: true,
         },
       },
     }));
@@ -118,6 +117,22 @@ export const useChatStore = create<ChatStore>((set) => ({
       };
     });
   },
+  updateChatMessage: (id: string, partial: Partial<Message>) => {
+    set((state) => {
+      const existing = state.messages[id];
+      if (!existing) return state;
+
+      return {
+        messages: {
+          ...state.messages,
+          [id]: {
+            ...existing,
+            ...partial,
+          },
+        },
+      };
+    });
+  },
   updateWidgetBlock: (messageId, refId, content) => {
     set((state) => {
       const msg = state.messages[messageId];
@@ -137,22 +152,6 @@ export const useChatStore = create<ChatStore>((set) => ({
                   }
                 : item,
             ),
-          },
-        },
-      };
-    });
-  },
-  setMessageLoading: (messageId, isLoading) => {
-    set((state) => {
-      const msg = state.messages[messageId];
-      if (!msg) return state;
-
-      return {
-        messages: {
-          ...state.messages,
-          [messageId]: {
-            ...msg,
-            isLoading,
           },
         },
       };

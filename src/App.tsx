@@ -19,7 +19,7 @@ const staterPrompts = [
 ];
 
 export default function App() {
-  const { addChatMessage, messages } = useChatStore();
+  const { messages, addChatMessage, updateChatMessage } = useChatStore();
   const [input, setInput] = useState("");
 
   async function sendMessage(customInput?: string) {
@@ -32,7 +32,17 @@ export default function App() {
     try {
       await query(userMsg, msgId);
     } catch (e) {
-      console.error("Caught");
+      updateChatMessage(msgId, {
+        isLoading: false,
+        content: [
+          {
+            type: "text",
+            refId: null,
+            content: "Something went wrong! Please try again.",
+            isLoading: false,
+          },
+        ],
+      });
       toast("Error occurred, please try again!", {
         description: (
           <pre className="mt-2 w-[320px] overflow-x-auto rounded-md bg-code p-4 text-code-foreground">
@@ -40,6 +50,7 @@ export default function App() {
           </pre>
         ),
         classNames: { content: "flex flex-col gap-2" },
+        position: "bottom-right",
       });
     }
   }

@@ -35,13 +35,18 @@ export async function query(query: string, currentMsgId: string) {
     dangerouslyAllowBrowser: true,
   });
 
-  if (chatStore.context.length === 0) {
+  if (chatStore.context.length === 0)
     chatStore.pushContext({ role: "system", content: systemPrompt });
-  }
 
   chatStore.pushContext({ role: "user", content: query });
+  chatStore.updateChatMessage(currentMsgId, {
+    annotation: "Starting to process",
+  });
+
+  let stepCount = 0;
 
   while (true) {
+    stepCount++;
     const context = useChatStore.getState().context;
     const res = await ai.chat.completions.create({
       model: modelStore.config.modelId,
@@ -53,10 +58,20 @@ export async function query(query: string, currentMsgId: string) {
     type ToolCall = { id: string; name: string; arguments: string };
     const toolCalls: Record<number, ToolCall> = {};
     let textContent = "";
+    let isContentAnnotated = false;
 
     for await (const chunk of res) {
       const delta = chunk.choices[0].delta;
       if (delta.content) {
+        if (!isContentAnnotated) {
+          chatStore.updateChatMessage(currentMsgId, {
+            annotation:
+              stepCount > 2
+                ? "Connecting the dots"
+                : "Working through the details",
+          });
+          isContentAnnotated = true;
+        }
         textContent += delta.content;
         chatStore.appendTextDelta(currentMsgId, delta.content);
       } else if (delta.tool_calls) {
@@ -69,6 +84,10 @@ export async function query(query: string, currentMsgId: string) {
           if (tc.function?.name) {
             toolCalls[idx].name = tc.function.name;
             if (tc.function.name === "render_visual") {
+              chatStore.updateChatMessage(currentMsgId, {
+                annotation: "Bringing this to life",
+              });
+              isContentAnnotated = false;
               chatStore.appendWidgetBlock(currentMsgId, tc.id || "");
             }
           }
@@ -82,7 +101,7 @@ export async function query(query: string, currentMsgId: string) {
 
     if (toolCallList.length === 0) {
       chatStore.pushContext({ role: "assistant", content: textContent });
-      chatStore.setMessageLoading(currentMsgId, false);
+      chatStore.updateChatMessage(currentMsgId, { isLoading: false });
       break;
     }
 
