@@ -108,7 +108,7 @@ export function VisualWidget({
 
     if (!initializedRef.current) {
       doc.open();
-      doc.write(`${baseStyles}<body>${cleaned}</body>${heightScript(id)}`);
+      doc.writeln(`${baseStyles}<body>${cleaned}</body>${heightScript(id)}`);
       doc.close();
       initializedRef.current = true;
     } else {
@@ -121,17 +121,21 @@ export function VisualWidget({
     : undefined;
 
   return (
-    <iframe
-      ref={iframeRef}
-      srcDoc={srcDoc}
-      sandbox="allow-scripts allow-same-origin"
-      style={{
-        width: "100%",
-        border: "none",
-        height: "0px",
-        display: "block",
-        transition: "height 0.15s ease-out",
-      }}
-    />
+    <div
+      className={`rounded-md p-2 w-full h-full ${streaming ? "shimmer shimmer-bg shimmer-invert shimmer-color-muted shimmer-speed-500 bg-card pointer-events-none" : ""}`}
+    >
+      <iframe
+        ref={iframeRef}
+        srcDoc={srcDoc}
+        sandbox="allow-scripts allow-same-origin"
+        style={{
+          width: "100%",
+          border: "none",
+          height: "0px",
+          display: "block",
+          transition: "height 0.15s ease-out",
+        }}
+      />
+    </div>
   );
 }
