@@ -58,9 +58,11 @@ export function ModelConfig() {
         if (!open) form.reset();
       }}
     >
-      <DialogTrigger className="border flex items-center gap-1.5 px-2 py-1 rounded-md">
-        <Brain className="size-4" />
-        <p className="text-sm">{config.modelId}</p>
+      <DialogTrigger asChild>
+        <Button variant={"outline"} size={"sm"} className="gap-1.5">
+          <Brain className="size-4" />
+          {config.modelId}
+        </Button>
       </DialogTrigger>
       <form id="form-model-config" onSubmit={form.handleSubmit(onSubmit)}>
         <DialogContent className="bg-card">

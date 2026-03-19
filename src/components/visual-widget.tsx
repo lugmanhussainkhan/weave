@@ -59,7 +59,7 @@ body{
 function heightScript(id: string) {
   return `<script>
   function sendHeight() {
-    const height = document.documentElement.scrollHeight;
+    const height = document.body.scrollHeight;
     parent.postMessage({ type: "iframe-height", id: "${id}", height }, "*");
   }
   new ResizeObserver(sendHeight).observe(document.body);
