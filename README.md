@@ -4,13 +4,13 @@ A browser-based chat playground for testing the visualization capabilities of di
 
 ## Overview
 
-Weave lets you chat with any LLM that exposes an OpenAI-compatible Chat Completions API, and see rich inline visuals — interactive diagrams, charts, animations, and more — rendered directly in the conversation. It's a playground to explore how well different models handle visual reasoning and code generation.
+Weave lets you chat with any LLM, and see rich inline visuals — interactive diagrams, charts, animations, and more — rendered directly in the conversation. It's a playground to explore how well different models handle visual reasoning and code generation.
 
 **Note**: Your API key is stored in browser local storage and requests go directly from your browser to the provider.
 
 ## Supported Models & Providers
 
-Weave works with any provider that implements the OpenAI Chat Completions API, standard adopted by most LLM providers. Some well-known ones include Baseten, Groq, Together AI, and inference servers like Ollama, LM Studio, vLLM etc.
+Weave works with any provider that implements the **OpenAI Chat Completions API standard**, standard adopted by most LLM providers.
 
 **A note on CORS**: Since requests are sent directly from your browser, the provider's API must have CORS enabled. Many providers restrict this for security reasons, which will result in a blocked request. If you run into this, [OpenRouter](https://openrouter.ai) is a good workaround. Any other OpenAI-compatible proxy with CORS support will work the same way.
 
