@@ -169,7 +169,7 @@ export default function App() {
               <p className="text-xs text-muted-foreground">
                 by{" "}
                 <a
-                  href="https://www.madhi.ai"
+                  href="https://www.madhi.ai/?utm_source=weave"
                   target="_blank"
                   className="underline"
                 >
@@ -192,7 +192,13 @@ export default function App() {
                 </svg>
               </Button>
             </a>
-            <Button variant={"outline"}>New Chat</Button>
+            <Button
+              variant={"outline"}
+              type="button"
+              onClick={() => window.location.reload()}
+            >
+              New Chat
+            </Button>
           </div>
         </div>
       </nav>

@@ -21,9 +21,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Brain } from "lucide-react";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { toast } from "sonner";
 import * as z from "zod";
 import { Button } from "./ui/button";
-import { toast } from "sonner";
 
 const formSchema = z.object({
   baseURL: z.httpUrl(),
